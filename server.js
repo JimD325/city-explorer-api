@@ -41,7 +41,7 @@ class Forecast {
   static weather = require('./data/weather.json')
 
   constructor(city) {
-    this.city = Forecast.weather.find(locationObj => locationObj.city_name.toLowerCase() === city.toLowerCase);
+    this.city = Forecast.weather.find(locationObj => locationObj.city_name.toLowerCase() === city.toLowerCase());
     this.forecastArray = this.city.data.map(locationObj => ({
       description: `Temperature ranges from ${locationObj.low_temp} degrees  to ${locationObj.max_temp} degrees.`, date: `${locationObj.datetime}`})
     );
