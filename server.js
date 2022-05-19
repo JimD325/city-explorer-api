@@ -17,7 +17,7 @@ const cors = require('cors');
 app.use(cors());
 
 // we are getting the port variable from the .env file. A port is a virtual socket you use to plug in and connect to other devices. We used this before in lab 6 to store our keys for API data, we are doing that here as well, so now PORT is equal to our env file. PORT variable is NOT bannanas, when you deploy to Heroku, Heroku looks for a varaible named PORT to insert its server PORT into. 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // this is a route or an endpoint. if you turn the server on and go to http://localhost:3001/ (or whatever port you specified in your .env), you will see 'hello from the home route'. app.get is saying "Read me some data."
 // the '/' is our "home" or "testing" path. request response are also NOT bannanas. you must use req, res, request, or response. 
@@ -28,11 +28,11 @@ app.get('/', (request, response) => {
 // response.send sents it to our front end. 
 // create a route for handling weather data. can use req or res, or request or response, but thats it. 
 app.get('/weather', (req, res) => {
-  res.send('Testing the weather');
   const city = req.query.city_name;
   console.log('location of weather requested: ', city);
   const forecastResult = new Forecast(city);
   console.log("forcast result is:", forecastResult)
+  res.send(forecastResult);
 })
 
 // this class is used to fulfill requests for city locations
