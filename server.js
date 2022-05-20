@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // express is a server library, save as a varible because you want to do things with the creation of the express library, allows you to call methods and properties using express variable. 
 const express = require('express');
-
+const axios = require('axios');
 // initalizes the express library, instantiates a new instance of an Express Server. The way in which you order your code is important, you can switch out dependencies, but the way you put them together must be in the same order for the screen reader ie, you cannot call express before you require it. 
 const app = express();
 
@@ -23,29 +23,30 @@ const PORT = process.env.PORT || 3002;
 // the '/' is our "home" or "testing" path. request response are also NOT bannanas. you must use req, res, request, or response. 
 
 app.get('/', (request, response) => {
-  response.send('hello from the home route');
+  response.send('hello from the best home route');
 });
 // response.send sents it to our front end. 
 // create a route for handling weather data. can use req or res, or request or response, but thats it. 
-app.get('/weather', (req, res) => {
-  const city = req.query.city_name;
-  console.log('location of weather requested: ', city);
+app.get('/weather', async (req, res) => {
+
+  const lon = req.query.locationLong;
+  const lat = req.query.locationLong;
+  const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&${lon}&key=${process.env.WEATHER_API_KEY}&include=minutely`
+
+  const weatherResponse = await axios.get(url);
+  console.log(weatherResponse.data);
   const forecastResult = new Forecast(city);
-  console.log("forcast result is:", forecastResult)
+
   res.send(forecastResult);
 })
 
 // this class is used to fulfill requests for city locations
 class Forecast {
   // static means that this variable is use by the class to create the Forecast object and is NOT used by the Forecast object. 
-  static weather = require('./data/weather.json')
-
-  constructor(city) {
-    this.city = Forecast.weather.find(locationObj => locationObj.city_name.toLowerCase() === city.toLowerCase());
-    this.forecastArray = this.city.data.map(locationObj => ({
-      description: `Temperature ranges from ${locationObj.low_temp} degrees  to ${locationObj.max_temp} degrees.`, date: `${locationObj.datetime}`})
-    );
-    console.log(this.forecastArray);
+constructor(city) {
+ 
+  
+    
   };
 }
 // .find is similar to filter, it returns the first item it finds that matches the conditional. 
