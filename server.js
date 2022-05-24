@@ -6,11 +6,12 @@ require('dotenv').config();
 // express is a server library, save as a varible because you want to do things with the creation of the express library, allows you to call methods and properties using express variable. 
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 // initalizes the express library, instantiates a new instance of an Express Server. The way in which you order your code is important, you can switch out dependencies, but the way you put them together must be in the same order for the screen reader ie, you cannot call express before you require it. 
 const app = express();
 
 // library that determines who is allowed to speak to our server, same as express.
-const cors = require('cors');
+
 
 
 // this settting says that everyone is allowed to speak to our server. cors is our "middleware". Hey app, use the cors library, creates an instance of cors and telling our app to use it as its bodyguard. 
@@ -23,30 +24,61 @@ const PORT = process.env.PORT || 3002;
 // the '/' is our "home" or "testing" path. request response are also NOT bannanas. you must use req, res, request, or response. 
 
 app.get('/', (request, response) => {
-  response.send('hello from the best home route');
+  response.send('Home route Message');
 });
 // response.send sents it to our front end. 
 // create a route for handling weather data. can use req or res, or request or response, but thats it. 
 app.get('/weather', async (req, res) => {
+  const { lat, lon } = req.query;
+  const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&lat=${lat}&lon=${lon}&days=7`
+  try {
+    const weatherResponse = await axios.get(url);
+    const forecastResult = weatherResponse.data.data.map(val => new Forecast(val));
+    res.status(200).send(forecastResult);
+  }
+  catch (error) {
+    error.customeMessage = 'Summon the Dev Team';
+  }
+}
 
-  const lon = req.query.locationLong;
-  const lat = req.query.locationLong;
-  const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&${lon}&key=${process.env.WEATHER_API_KEY}&include=minutely`
-
-  const weatherResponse = await axios.get(url);
-  console.log(weatherResponse.data);
-  const forecastResult = new Forecast(city);
-
-  res.send(forecastResult);
-})
+)
 
 // this class is used to fulfill requests for city locations
 class Forecast {
   // static means that this variable is use by the class to create the Forecast object and is NOT used by the Forecast object. 
-constructor(city) {
- 
+  constructor(city) {
+    this.description=city.weather.description
+    this.datetime=city.datetime;
+
   
-    
+  };
+}
+
+app.get('/movies', async (req, res) => {
+  const search = req.query.search.split(',')[0];
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_MOVIE_KEY}&query=${search}`;
+  try {
+    const response = await axios.get(url);
+    const movieResult = response.data.results.map(val => new Film(val));
+    console.log(movieResult);
+    res.status(200).send(movieResult);
+  }
+  catch (error) {
+    error.customeMessage = 'Summon the Dev Team';
+  }
+}
+
+)
+
+class Film {
+  // static means that this variable is use by the class to create the Forecast object and is NOT used by the Forecast object. 
+  constructor(movie) {
+    this.description=movie.overview;
+    this.date=movie.release_date;
+    this.tagline=movie.tagline;
+    this.title=movie.title;
+    this.viewerRating=movie.vote_average;
+    this.poster='https://image.tmdb.org/t/p/w500'+movie.poster_path;
   };
 }
 // .find is similar to filter, it returns the first item it finds that matches the conditional. 
