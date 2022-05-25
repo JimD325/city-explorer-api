@@ -60,7 +60,7 @@ app.get('/movies', async (req, res) => {
   try {
     const response = await axios.get(url);
     const movieResult = response.data.results.map(val => new Film(val));
-    console.log(movieResult);
+    // console.log(movieResult);
     res.status(200).send(movieResult);
   }
   catch (error) {
@@ -81,6 +81,10 @@ class Film {
     this.poster=movie.poster_path ? 'https://image.tmdb.org/t/p/w500'+movie.poster_path: '';
   };
 }
+
+app.use((error, req, res, next)=> {
+  res.status(500).send(error.message);
+});
 // .find is similar to filter, it returns the first item it finds that matches the conditional. 
 // this turns the server on to the port that you specifed in your .env file
 // listen method tells our express server which port to send data to. 
