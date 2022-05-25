@@ -78,7 +78,7 @@ class Film {
     this.tagline=movie.tagline;
     this.title=movie.title;
     this.viewerRating=movie.vote_average;
-    this.poster='https://image.tmdb.org/t/p/w500'+movie.poster_path;
+    this.poster=movie.poster_path ? 'https://image.tmdb.org/t/p/w500'+movie.poster_path: '';
   };
 }
 // .find is similar to filter, it returns the first item it finds that matches the conditional. 
