@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3002;
 // this is a route or an endpoint. if you turn the server on and go to http://localhost:3001/ (or whatever port you specified in your .env), you will see 'hello from the home route'. app.get is saying "Read me some data."
 // the '/' is our "home" or "testing" path. request response are also NOT bannanas. you must use req, res, request, or response. 
 
-app.get('/', (response) => {
+app.get('/', (request, response) => {
   response.send('Home route Message');
 });
 // response.send sents it to our front end. 
